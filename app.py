@@ -17,7 +17,7 @@ def process_file():
 <ul>
 <li><b>frecuencia</b>: Especifica la frecuencia de muestreo del audio. Los valores admitidos son (en khz): 8, 11, 22 y 44, o se puede poner el valor real: 22050. Si no se proporciona este parámetro, se utilizará el valor predeterminado de 22khz.</li>
 <li><b>canales</b>: Especifica el número de canales de audio. Los valores admitidos son: 1 para mono o 2 para estéreo. Si no se proporciona este parámetro, se utilizará el valor predeterminado de 1 (mono).</li>
-<li><b>kbps</b>: Especifica la tasa de bits de audio en kilobits por segundo. Este parámetro controla la calidad de la compresión del audio. Si no se proporciona este parámetro, se utilizará el valor predeterminado de 16 kbps.</li>
+<li><b>kbps</b>: Especifica la tasa de bits de audio en kilobits por segundo. Este parámetro controla la calidad de la compresión del audio. Si no se proporciona este parámetro, se utilizará el valor predeterminado de 24 kbps.</li>
 </ul>
 <p>Ejemplo:</p>
 <p>{host}/?frecuencia=22&canales=2&kbps=128k</p>

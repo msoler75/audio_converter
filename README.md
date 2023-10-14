@@ -6,7 +6,7 @@ La versatilidad del contenedor Docker permitirá su fácil implementación en Go
 
 # Parámetros en url
 
-Parámetros del método <b>POST</b>: <b>audio</b> que será el archivo que se quiere convertir.
+Parámetros del método <b>POST</b>: <b>file</b> que será el archivo que se quiere convertir.
 
 Se admite varios parámetros en la url para la configuración de salida deseada:
 **frecuencia**: Especifica la frecuencia de muestreo del audio. Los valores admitidos son (en khz): 8, 11, 22 y 44. Si no se proporciona este parámetro, se utilizará el valor predeterminado de 22khz.
@@ -124,10 +124,10 @@ Esto va a darnos una salida de este estilo:
 >
 > Done.
 >
-> Service [wordtomd] revision [wordtomd-00002-sim] has been deployed and is serving 100 percent of traffic.
+> Service [audioconvert] revision [audioconvert-00001-loz] has been deployed and is serving 100 percent of traffic.
 >
-> Service URL: https://wordtomd-zpzbiu7ooq-uw.a.run.app
+> Service URL: https://audioconvert-zpzbiu7ooq-uw.a.run.app
 
 Ahora podemos acceder al servicio según la URL indicada finalmente.
 
-Una vez que el servicio esté desplegado, podrás llamarlo desde tu aplicación enviando un comando POST con el archivo .docx en el campo ‘file’ y recibirás el archivo .zip resultante en la respuesta.
+Una vez que el servicio esté desplegado, podrás llamarlo desde tu aplicación enviando un comando POST con el archivo de audio en el campo ‘file’ y recibirás el archivo convertido resultante en formato mp3 en la respuesta.

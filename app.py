@@ -50,19 +50,19 @@ def process_file():
             kbps = params.get('kbps', ['24k'])[0]
 
             temp_dir = tempfile.gettempdir()
-            
+
             # Guardar el archivo de audio en el disco
             file = request.files['file']
-            filename = file.filename  # Obtener el nombre original del archivo
-            input_file_path =  os.path.join(temp_dir, filename.replace(" ", "_"))
+            filename = os.path.basename(file.filename)  # Obtener solo el nombre del archivo
+            input_file_path = os.path.join(temp_dir, filename.replace(" ", "_"))
             file.save(input_file_path)
 
             # Definir el nombre y ruta de destino para el archivo convertido
-            output_file_path = os.path.join(temp_dir, f'converted_{os.path.splitext(filename)[0].replace(" ", "_")}.mp3')
+            output_filename = f'converted_{os.path.splitext(filename)[0].replace(" ", "_")}.mp3'
+            output_file_path = os.path.join(temp_dir, output_filename)
 
-            print (input_file_path)
-            print (output_file_path)
-            
+            print(filename)
+                        
             if not os.path.exists(input_file_path):
                 return "El archivo no se pudo copiar.", 400
 

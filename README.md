@@ -6,7 +6,12 @@ La versatilidad del contenedor Docker permitirá su fácil implementación en Go
 
 # Parámetros en url
 
-Parámetros del método <b>POST</b>: <b>file</b> que será el archivo que se quiere convertir.
+Parámetros del método <b>POST</b>: 
+
+-<b>file</b> que será el archivo que se quiere convertir. El límite del archivo es 32Mbytes.
+-<b>url</b> que es una url donde está el archivo a convertir. De esta forma no hay límite en el tamaño del archivo.
+
+Se puede usar cualquiera de las dos formas anteriores.
 
 Se admite varios parámetros en la url para la configuración de salida deseada:
 **frecuencia**: Especifica la frecuencia de muestreo del audio. Los valores admitidos son (en khz): 8, 11, 22 y 44. Si no se proporciona este parámetro, se utilizará el valor predeterminado de 22khz.
@@ -104,11 +109,11 @@ Por ejemplo:
 
 Para desplegar la imagen del Docker en Google Cloud Run usa el comando:
 
-> gcloud run deploy --image=REGION-docker.pkg.dev/TU_PROYECTO_ID/REPO_NAME/nombre-de-la-app --platform=managed --allow-unauthenticated
+> gcloud run deploy --image=REGION-docker.pkg.dev/TU_PROYECTO_ID/REPO_NAME/nombre-de-la-app --platform=managed --allow-unauthenticated 
 
 Ejemplo:
 
-> gcloud run deploy --image=us-west1-docker.pkg.dev/TU_PROYECTO_ID/services/audio_converter --platform=managed --allow-unauthenticated
+> gcloud run deploy --image=us-west1-docker.pkg.dev/TU_PROYECTO_ID/services/audio_converter --platform=managed --allow-unauthenticated 
 
 Esto va a darnos una salida de este estilo:
 

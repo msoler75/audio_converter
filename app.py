@@ -3,8 +3,10 @@ from flask import Flask, request, send_file
 import os
 from urllib.parse import urlparse, parse_qs
 import tempfile
+import requests
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024  # 64 megabytes
 
 @app.route("/", methods=['GET', 'POST'])
 def process_file():
@@ -12,7 +14,11 @@ def process_file():
     if request.method == 'GET':
         host = request.host
         return f"""<h1>API de conversión de archivos de audio</h1>
-<p>Parámetros del método <b>POST</b>: <b>file</b> que será el archivo que se quiere convertir.</p>
+<p>Parámetros del método <b>POST</b>:</p>
+<ul>
+<li><b>file</b> que será el archivo que se quiere convertir. Límite del archivo: 32 Mbytes.</li>
+<li><b>url</b> url donde está el archivo que se quiere convertir. Sin límite de tamaño.</li>
+</ul>
 <p>Se admite varios parámetros en la url para la configuración de salida deseada:</p>
 <ul>
 <li><b>frecuencia</b>: Especifica la frecuencia de muestreo del audio. Los valores admitidos son (en khz): 8, 11, 22 y 44, o se puede poner el valor real: 22050. Si no se proporciona este parámetro, se utilizará el valor predeterminado de 22khz.</li>
@@ -24,10 +30,6 @@ def process_file():
 """
 
     elif request.method == 'POST':
-          
-        if 'file' not in request.files:
-            return "No se proporcionó un archivo en la solicitud.", 400
-
         try:
             # Obtener la URL completa de la solicitud
             url = request.url
@@ -51,11 +53,24 @@ def process_file():
 
             temp_dir = tempfile.gettempdir()
 
-            # Guardar el archivo de audio en el disco
-            file = request.files['file']
-            filename = os.path.basename(file.filename)  # Obtener solo el nombre del archivo
-            input_file_path = os.path.join(temp_dir, filename.replace(" ", "_"))
-            file.save(input_file_path)
+            if 'file' in request.files:
+                # Guardar el archivo de audio en el disco
+                file = request.files['file']
+                filename = os.path.basename(file.filename)  # Obtener solo el nombre del archivo
+                input_file_path = os.path.join(temp_dir, filename.replace(" ", "_"))
+                file.save(input_file_path)
+            elif 'url' in request.form:
+                # Descargar el archivo de audio desde la URL
+                file_url = request.form['url']
+                response = requests.get(file_url)
+                if response.status_code != 200:
+                    return "No se pudo descargar el archivo desde la URL proporcionada.", 400
+                filename = os.path.basename(urlparse(file_url).path)  # Obtener solo el nombre del archivo
+                input_file_path = os.path.join(temp_dir, filename.replace(" ", "_"))
+                with open(input_file_path, 'wb') as f:
+                    f.write(response.content)
+            else:
+                return "No se proporcionó un archivo ni una URL en la solicitud.", 400
 
             # Definir el nombre y ruta de destino para el archivo convertido
             output_filename = f'converted_{os.path.splitext(filename)[0].replace(" ", "_")}.mp3'
@@ -74,7 +89,6 @@ def process_file():
                                         ar=frecuencia,
                                         sample_fmt='s16',
                                         dither_method='triangular_hp').overwrite_output().run()
-            
             
             if not os.path.exists(output_file_path):
                 return "El archivo no se pudo generar.", 400
